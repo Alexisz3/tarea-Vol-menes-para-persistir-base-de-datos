@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="340" viewBox="0 0 800 340">
+<rect width="800" height="340" fill="#f4f7fb"/>
+<g font-family="Arial,sans-serif" fill="#17324d">
+<text x="32" y="40" font-size="23" font-weight="bold">PostgreSQL: contenedor y almacenamiento</text>
+<rect x="30" y="65" width="740" height="110" rx="12" fill="#ffe6df"/>
+<text x="48" y="93" font-size="18" font-weight="bold">Parte 1 · PGDATA en la capa escribible</text>
+<text x="48" y="125" font-size="17">server_db1 + test + customer → eliminar contenedor</text>
+<text x="48" y="153" font-size="17">Nuevo server_db1 → directorio nuevo → test no existe</text>
+<rect x="30" y="190" width="740" height="120" rx="12" fill="#d9f2e8"/>
+<text x="48" y="220" font-size="18" font-weight="bold">Parte 2 · PGDATA en el volumen pgdata</text>
+<text x="48" y="252" font-size="17">server_db2 → pgdata [test + customer] → eliminar contenedor</text>
+<text x="48" y="282" font-size="17">Nuevo server_db2 → mismo pgdata → base y registro disponibles</text>
+</g></svg>
