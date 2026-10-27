@@ -1,7 +1,7 @@
 # Práctica No. 3: Volúmenes para persistir una base de datos PostgreSQL
 
-**Estudiante:** Alexis  
-**Asignatura/curso:** [Completar]  
+**Estudiante:** Alexis Patiño  
+**Curso:** 4to ciclo  
 **Fecha:** 26 de octubre de 2026  
 **Estado:** Informe preparado para ejecutar. No se ha ejecutado Docker en este entorno; las salidas descritas son resultados esperados, no evidencias obtenidas.
 
