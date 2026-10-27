@@ -1,0 +1,5 @@
+ id |   fullname    | status 
+----+---------------+--------
+  1 | Alexis Patino | t
+(1 row)
+

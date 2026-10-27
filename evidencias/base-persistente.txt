@@ -1,0 +1,5 @@
+ datname 
+---------
+ test
+(1 row)
+

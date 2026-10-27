@@ -1,0 +1,136 @@
+Tue Oct 27 00:34:20 UTC 2026
+Client: Docker Engine - Community
+ Version:           29.4.2
+ API version:       1.54
+ Go version:        go1.26.2
+ Git commit:        055a478
+ Built:             Fri May  1 10:24:04 2026
+ OS/Arch:           linux/amd64
+ Context:           default
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          29.4.2
+  API version:      1.54 (minimum version 1.40)
+  Go version:       go1.26.2
+  Git commit:       d329809
+  Built:            Fri May  1 10:24:04 2026
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          v2.4.1
+  GitCommit:        f2551031d7276a770f65f98c9b52e57e7dad07e8
+ runc:
+  Version:          1.5.2
+  GitCommit:        v1.5.2-0-g29dd3dc2
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+17: Pulling from library/postgres
+c9b382b1f732: Pulling fs layer
+d1b142a2d3ac: Pulling fs layer
+90d33c82e6b4: Pulling fs layer
+515b4b00cc07: Pulling fs layer
+99b43abe6052: Pulling fs layer
+f2be67225471: Pulling fs layer
+2ab475e318db: Pulling fs layer
+e0428ef87eb8: Pulling fs layer
+bee16f784947: Pulling fs layer
+0ec7842b4287: Pulling fs layer
+a5bccd2244f9: Pulling fs layer
+633cb7982454: Pulling fs layer
+d38aaa71d21a: Pulling fs layer
+0f6d195ee345: Pulling fs layer
+515b4b00cc07: Download complete
+90d33c82e6b4: Download complete
+99b43abe6052: Download complete
+633cb7982454: Download complete
+0f6d195ee345: Download complete
+a5bccd2244f9: Download complete
+d38aaa71d21a: Download complete
+d1b142a2d3ac: Download complete
+2ab475e318db: Download complete
+e0428ef87eb8: Download complete
+bee16f784947: Download complete
+c9b382b1f732: Download complete
+24468b3cc01f: Download complete
+dbfab41aea6a: Download complete
+f2be67225471: Download complete
+0ec7842b4287: Download complete
+e0428ef87eb8: Pull complete
+f2be67225471: Pull complete
+c9b382b1f732: Pull complete
+0f6d195ee345: Pull complete
+d1b142a2d3ac: Pull complete
+633cb7982454: Pull complete
+2ab475e318db: Pull complete
+bee16f784947: Pull complete
+515b4b00cc07: Pull complete
+90d33c82e6b4: Pull complete
+99b43abe6052: Pull complete
+a5bccd2244f9: Pull complete
+d38aaa71d21a: Pull complete
+0ec7842b4287: Pull complete
+Digest: sha256:b8faeff7712663c2773a190181e1246e37e364b887611c04658c28b44e2408fe
+Status: Downloaded newer image for postgres:17
+docker.io/library/postgres:17
+PARTE 1: CREAR CONTENEDOR SIN VOLUMEN EN PGDATA
+a2c0af2aa15a559564d74cec6217db971ef12446cba794e865defd4bd109e49c
+CREATE DATABASE
+CREATE TABLE
+INSERT 0 1
+ id |   fullname    | status 
+----+---------------+--------
+  1 | Alexis Patino | t
+(1 row)
+
+       data_directory        
+-----------------------------
+ /var/lib/postgresql/labdata
+(1 row)
+
+[{"Type":"volume","Name":"85d697afb78b92bbefdb22c8fca2e7d725c34e50540e563a75197c6db0d0f2e7","Source":"/var/lib/docker/volumes/85d697afb78b92bbefdb22c8fca2e7d725c34e50540e563a75197c6db0d0f2e7/_data","Destination":"/var/lib/postgresql/data","Driver":"local","Mode":"","RW":true,"Propagation":""}]
+server_db1
+server_db1
+1bbb2ae432c9a9359a8da3738c7845b386c22dab3b8c4a6df2d70a8a59632ad5
+ datname 
+---------
+(0 rows)
+
+PARTE 2: REUTILIZAR VOLUMEN PGDATA
+pgdata
+ff4c6c90180f6452bb9cdd525a8a57271d93ff32af1153c11c9f2fae8341e57d
+CREATE DATABASE
+CREATE TABLE
+INSERT 0 1
+[{"Type":"volume","Name":"pgdata","Source":"/var/lib/docker/volumes/pgdata/_data","Destination":"/var/lib/postgresql/data","Driver":"local","Mode":"z","RW":true,"Propagation":""}]
+ id |   fullname    | status 
+----+---------------+--------
+  1 | Alexis Patino | t
+(1 row)
+
+server_db2
+server_db2
+[
+    {
+        "CreatedAt": "2026-10-27T00:34:31Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/pgdata/_data",
+        "Name": "pgdata",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+a4a0a7fce29b399fef5bf622f70352f2a083c5a125447fb4f82b67646dc205f8
+ datname 
+---------
+ test
+(1 row)
+
+ id |   fullname    | status 
+----+---------------+--------
+  1 | Alexis Patino | t
+(1 row)
+
+EXITO: perdida sin volumen y persistencia con pgdata verificadas.
