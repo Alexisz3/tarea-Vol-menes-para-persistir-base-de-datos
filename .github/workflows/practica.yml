@@ -1,0 +1,92 @@
+name: Practica PostgreSQL
+on:
+  push:
+    paths:
+      - '.github/workflows/practica.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  persistencia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ejecutar practica y registrar evidencias
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidencias
+          inicio=$(date +%s)
+          exec > >(tee evidencias/ejecucion.txt) 2>&1
+          date -u
+          docker version
+          docker pull postgres:17
+          ready() {
+            for i in {1..60}; do
+              if docker exec "$1" psql -U postgres -d postgres -Atc 'SELECT 1' >/dev/null 2>&1; then return 0; fi
+              sleep 2
+            done
+            return 1
+          }
+          crear_datos() {
+            docker exec "$1" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c 'CREATE DATABASE test;'
+            docker exec "$1" psql -U postgres -d test -v ON_ERROR_STOP=1 -c "CREATE TABLE customer (id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fullname VARCHAR(150) NOT NULL, status BOOLEAN NOT NULL DEFAULT TRUE); INSERT INTO customer (fullname,status) VALUES ('Alexis Patino',TRUE);"
+          }
+          echo 'PARTE 1: CREAR CONTENEDOR SIN VOLUMEN EN PGDATA'
+          docker run -d --name server_db1 -e POSTGRES_PASSWORD=Practica3_Local -e PGDATA=/var/lib/postgresql/labdata -p 127.0.0.1:5433:5432 postgres:17
+          ready server_db1
+          crear_datos server_db1
+          docker exec server_db1 psql -U postgres -d test -c 'SELECT * FROM customer;' | tee evidencias/figura2.txt
+          docker exec server_db1 psql -U postgres -d postgres -c 'SHOW data_directory;'
+          docker inspect server_db1 --format '{{json .Mounts}}'
+          docker stop server_db1
+          docker rm -v server_db1
+          docker run -d --name server_db1 -e POSTGRES_PASSWORD=Practica3_Local -e PGDATA=/var/lib/postgresql/labdata -p 127.0.0.1:5433:5432 postgres:17
+          ready server_db1
+          docker exec server_db1 psql -U postgres -d postgres -c "SELECT datname FROM pg_database WHERE datname='test';" | tee evidencias/figura3.txt
+          test "$(docker exec server_db1 psql -U postgres -d postgres -Atc "SELECT count(*) FROM pg_database WHERE datname='test';")" = 0
+          echo 'PARTE 2: REUTILIZAR VOLUMEN PGDATA'
+          docker volume create pgdata
+          docker run -d --name server_db2 -e POSTGRES_PASSWORD=Practica3_Local -p 127.0.0.1:5434:5432 --mount type=volume,source=pgdata,target=/var/lib/postgresql/data postgres:17
+          ready server_db2
+          crear_datos server_db2
+          docker inspect server_db2 --format '{{json .Mounts}}' | tee evidencias/montaje.txt
+          docker exec server_db2 psql -U postgres -d test -c 'SELECT * FROM customer;' | tee evidencias/figura4.txt
+          docker stop server_db2
+          docker rm server_db2
+          docker volume inspect pgdata
+          docker run -d --name server_db2 -e POSTGRES_PASSWORD=Practica3_Local -p 127.0.0.1:5434:5432 --mount type=volume,source=pgdata,target=/var/lib/postgresql/data postgres:17
+          ready server_db2
+          docker exec server_db2 psql -U postgres -d postgres -c "SELECT datname FROM pg_database WHERE datname='test';" | tee evidencias/base-persistente.txt
+          docker exec server_db2 psql -U postgres -d test -c 'SELECT * FROM customer;' | tee evidencias/figura5.txt
+          test "$(docker exec server_db2 psql -U postgres -d test -Atc "SELECT count(*) FROM customer WHERE id=1 AND fullname='Alexis Patino' AND status=TRUE;")" = 1
+          docker exec server_db2 psql -U postgres -d postgres -c 'SELECT version();' > evidencias/postgresql.txt
+          echo "$(( $(date +%s) - inicio ))" > evidencias/duracion-segundos.txt
+          echo 'EXITO: perdida sin volumen y persistencia con pgdata verificadas.'
+      - name: Crear imagenes de las salidas reales
+        run: |
+          python - <<'PY'
+          import html
+          from pathlib import Path
+          for n in range(2,6):
+              text=Path(f'evidencias/figura{n}.txt').read_text()
+              lines=text.splitlines()
+              h=85+26*len(lines)
+              svg=f'<svg xmlns="http://www.w3.org/2000/svg" width="800" height="{h}"><rect width="800" height="{h}" fill="#102030"/><g font-family="monospace" font-size="17" fill="#e5f2ff"><text x="24" y="32">Figura {n} - Salida real de psql / GitHub Actions</text>'
+              for i,line in enumerate(lines):
+                  svg+=f'<text x="24" y="{72+i*26}" xml:space="preserve">{html.escape(line)}</text>'
+              svg+='</g></svg>'
+              Path(f'evidencias/figura{n}.svg').write_text(svg)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-postgresql
+          path: evidencias/
+      - name: Guardar evidencias en repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evidencias
+          git commit -m "Registrar resultados reales de la practica PostgreSQL"
+          git push
