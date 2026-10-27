@@ -3,7 +3,7 @@
 **Estudiante:** Alexis Patiño  
 **Curso:** 4to ciclo  
 **Fecha:** 26 de octubre de 2026  
-**Estado:** Informe preparado para ejecutar. No se ha ejecutado Docker en este entorno; las salidas descritas son resultados esperados, no evidencias obtenidas.
+**Estado:** Práctica ejecutada y verificada en GitHub Actions con Docker sobre Linux. Se utilizó psql como administrador de base de datos. Las figuras 2–5 reproducen las salidas reales de las consultas, no son capturas de una interfaz gráfica. [Ver ejecución completa](https://github.com/Alexisz3/tarea-Vol-menes-para-persistir-base-de-datos/actions/runs/40427245935).
 
 ## 1. Título
 
@@ -11,7 +11,7 @@ Persistencia de datos en PostgreSQL al recrear contenedores Docker, con y sin re
 
 ## 2. Tiempo de duración
 
-Tiempo estimado: 60–90 minutos. **Tiempo real empleado:** [Completar después de ejecutar].
+Tiempo de ejecución automatizada de los comandos: **14 segundos (0,23 minutos)**, desde la descarga de la imagen hasta la verificación final. Este tiempo no incluye la preparación del informe ni la grabación del audio. Ejecución: 26 de octubre de 2026, 19:34, hora de Ecuador.
 
 ## 3. Fundamentos
 
@@ -54,7 +54,7 @@ La comprobación debe comparar el estado antes y después de recrear cada conten
 - Cuenta y repositorio de GitHub.
 - Micrófono o teléfono para grabar una reflexión personal en MP3 de al menos 60 segundos.
 
-**Versiones reales:** [Anotar salida de `docker version` y versión del administrador utilizado].
+**Versiones reales:** Docker Engine 29.4.2; PostgreSQL 17.11 sobre Linux x86_64; cliente psql incluido en postgres:17. Se utilizó el runner ubuntu-latest de GitHub Actions. Ver [registro íntegro](evidencias/ejecucion.txt) y [versión PostgreSQL](evidencias/postgresql.txt).
 
 ## 7. Material de apoyo
 
@@ -121,19 +121,21 @@ CREATE TABLE customer (
     fullname VARCHAR(150) NOT NULL,
     status BOOLEAN NOT NULL DEFAULT TRUE
 );
-INSERT INTO customer (fullname, status) VALUES ('Cliente de prueba', TRUE);
+INSERT INTO customer (fullname, status) VALUES ('Alexis Patino', TRUE);
 SELECT id, fullname, status FROM customer ORDER BY id;
 ```
 
 Alternativa desde terminal, después de crear la base:
 
 ```powershell
-docker exec server_db1 psql -U postgres -d test -v ON_ERROR_STOP=1 -c "CREATE TABLE customer (id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fullname VARCHAR(150) NOT NULL, status BOOLEAN NOT NULL DEFAULT TRUE); INSERT INTO customer (fullname, status) VALUES ('Cliente de prueba', TRUE); SELECT id, fullname, status FROM customer ORDER BY id;"
+docker exec server_db1 psql -U postgres -d test -v ON_ERROR_STOP=1 -c "CREATE TABLE customer (id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fullname VARCHAR(150) NOT NULL, status BOOLEAN NOT NULL DEFAULT TRUE); INSERT INTO customer (fullname, status) VALUES ('Alexis Patino', TRUE); SELECT id, fullname, status FROM customer ORDER BY id;"
 ```
 
 Usar el administrador o la alternativa de terminal para crear objetos; no repetir ambos caminos sobre la misma base.
 
-**Evidencia pendiente — Figura 2.** Insertar una captura real de `customer` con su registro en `server_db1`, antes de eliminarlo.
+![Salida antes de eliminar server_db1](evidencias/figura2.svg)
+
+**Figura 2.** Salida real de psql: registro inicial en server_db1. [Texto original](evidencias/figura2.txt).
 
 **Paso 5. Revisar dónde se almacenan los datos.**
 
@@ -169,7 +171,9 @@ docker exec server_db1 psql -U postgres -d postgres -c "SELECT datname FROM pg_d
 
 Resultado esperado: cero filas. No crear `test` otra vez antes de esta comprobación.
 
-**Evidencia pendiente — Figura 3.** Insertar captura real de la consulta sin filas después de recrear `server_db1`.
+![Consulta después de recrear server_db1](evidencias/figura3.svg)
+
+**Figura 3.** La consulta al catálogo devuelve cero filas: test no existe. [Texto original](evidencias/figura3.txt).
 
 ### 8.3. Parte 2: PostgreSQL con volumen persistente
 
@@ -190,10 +194,12 @@ Alternativa completa desde terminal:
 
 ```powershell
 docker exec server_db2 psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE test;"
-docker exec server_db2 psql -U postgres -d test -v ON_ERROR_STOP=1 -c "CREATE TABLE customer (id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fullname VARCHAR(150) NOT NULL, status BOOLEAN NOT NULL DEFAULT TRUE); INSERT INTO customer (fullname, status) VALUES ('Cliente de prueba', TRUE); SELECT id, fullname, status FROM customer ORDER BY id;"
+docker exec server_db2 psql -U postgres -d test -v ON_ERROR_STOP=1 -c "CREATE TABLE customer (id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, fullname VARCHAR(150) NOT NULL, status BOOLEAN NOT NULL DEFAULT TRUE); INSERT INTO customer (fullname, status) VALUES ('Alexis Patino', TRUE); SELECT id, fullname, status FROM customer ORDER BY id;"
 ```
 
-**Evidencia pendiente — Figura 4.** Insertar captura del montaje `pgdata` y del registro antes de eliminar `server_db2`.
+![Registro inicial en server_db2](evidencias/figura4.svg)
+
+**Figura 4.** Registro antes de eliminar server_db2. [Montaje real pgdata](evidencias/montaje.txt) y [consulta original](evidencias/figura4.txt).
 
 **Paso 10. Eliminar únicamente el contenedor y reutilizar el volumen.**
 
@@ -216,9 +222,11 @@ docker exec server_db2 psql -U postgres -d test -c "SELECT id, fullname, status 
 
 Resultado esperado: una fila con `test` en la primera consulta y el registro original en la segunda. `psql` representa el booleano verdadero como `t`; otros clientes pueden mostrar `true`.
 
-**Evidencia pendiente — Figura 5.** Insertar captura real de `test` y de la fila recuperada después de recrear `server_db2`.
+![Registro conservado al reutilizar pgdata](evidencias/figura5.svg)
 
-Guardar las capturas en `imagenes/` y añadirlas con `![Figura y descripción](imagenes/nombre.png)`. Mantener un ancho máximo de 800 px, según la plantilla. Las capturas deben mostrar resultados reales, sin contraseñas visibles.
+**Figura 5.** Registro original conservado después de recrear server_db2. [Consulta original](evidencias/figura5.txt) y [comprobación de test](evidencias/base-persistente.txt).
+
+Las imágenes tienen 800 px de ancho y se generaron directamente a partir de las salidas de psql guardadas durante la ejecución. Se conservan los archivos de texto para contrastarlas. La práctica se realizó mediante terminal; no se utilizó DataGrip ni TablePlus. Si el docente exige capturas de pantalla de un cliente gráfico, esas capturas deben añadirse como evidencia complementaria.
 
 ## 9. Resultados esperados
 
@@ -228,19 +236,19 @@ Guardar las capturas en `imagenes/` y añadirlas con `![Figura y descripción](i
 | Existe el registro antes de eliminar | Sí | Sí |
 | Existe `test` después de recrear | No | Sí |
 | Se recupera el registro original | No | Sí |
-| Verificación ejecutada en este informe | Pendiente | Pendiente |
+| Verificación ejecutada en este informe | Correcta | Correcta |
 
-**Resultados observados:** [Completar después de ejecutar y adjuntar las figuras 2–5].
+**Resultados observados:** después de recrear server_db1, la consulta de test devolvió `(0 rows)`. Después de recrear server_db2, test permaneció y customer conservó exactamente el registro `1 | Alexis Patino | t`. El flujo comprobó automáticamente ambos resultados y terminó correctamente. No se reinsertaron datos tras recrear server_db2.
 
-**Conclusión prevista:** reutilizar el mismo volumen permite desacoplar los datos del ciclo de vida del contenedor. Mantener el nombre del contenedor por sí solo no conserva la información. Esta conclusión debe contrastarse con las consultas obtenidas en la ejecución real.
+**Conclusión:** las consultas confirmaron que reutilizar el volumen pgdata conserva la base y el registro al recrear el contenedor. El nombre server_db1 no recuperó los archivos eliminados de su capa escribible. Por tanto, la persistencia depende del almacenamiento utilizado y de volver a montarlo correctamente. El volumen debe complementarse con respaldos.
 
 ### Lista para la entrega
 
-- [ ] Completar nombre, curso, duración y versiones reales.
-- [ ] Ejecutar ambas partes y registrar los resultados observados.
-- [ ] Añadir las capturas de las figuras 2–5.
+- [x] Completar nombre, curso, duración y versiones reales.
+- [x] Ejecutar ambas partes y registrar los resultados observados.
+- [x] Añadir las figuras 2–5 con salidas reales de terminal y sus textos originales.
 - [ ] Grabar una reflexión propia en MP3 y comprobar que dura al menos 60 segundos.
-- [ ] Subir el informe, el diagrama y las capturas al repositorio GitHub.
+- [x] Subir el informe, el diagrama y las evidencias al repositorio GitHub.
 - [ ] Entregar el enlace de este archivo en GitHub y adjuntar el MP3 en la plataforma de la asignatura.
 
 ## 10. Bibliografía
