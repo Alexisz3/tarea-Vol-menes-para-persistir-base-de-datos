@@ -55,6 +55,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add evidencias
           git diff --cached --quiet || git commit -m "Guardar capturas reales y resultados MySQL phpMyAdmin"
+          git pull --rebase origin main
           git push
       - name: Liberar servicios del runner
         if: always()
