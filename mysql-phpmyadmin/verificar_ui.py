@@ -14,7 +14,7 @@ with sync_playwright() as p:
         page.locator('#input_password').fill(os.environ['MYSQL_ROOT_PASSWORD'])
         page.locator('#input_go').click()
         page.wait_for_load_state('networkidle')
-        page.get_by_role('link', name='Databases', exact=True).first.click()
+        page.get_by_role('link', name='Databases').first.click()
         page.wait_for_load_state('networkidle')
         field = page.locator('input[name="new_db"]')
         field.fill('test_red')
