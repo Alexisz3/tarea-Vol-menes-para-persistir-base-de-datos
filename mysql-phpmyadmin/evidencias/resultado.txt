@@ -1,0 +1,1 @@
+VERIFICACION CORRECTA: test_red creada desde phpMyAdmin y confirmada en MySQL.

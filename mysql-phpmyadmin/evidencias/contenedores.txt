@@ -1,3 +1,3 @@
 NAME              IMAGE              COMMAND                  SERVICE      CREATED          STATUS                    PORTS
-mysql_tas3        mysql:8.4          "docker-entrypoint.s…"   mysql        14 seconds ago   Up 10 seconds (healthy)   3306/tcp, 33060/tcp
-phpmyadmin_tas3   phpmyadmin:5.2.3   "/docker-entrypoint.…"   phpmyadmin   11 seconds ago   Up Less than a second     127.0.0.1:8080->80/tcp
+mysql_tas3        mysql:8.4          "docker-entrypoint.s…"   mysql        13 seconds ago   Up 10 seconds (healthy)   3306/tcp, 33060/tcp
+phpmyadmin_tas3   phpmyadmin:5.2.3   "/docker-entrypoint.…"   phpmyadmin   10 seconds ago   Up Less than a second     127.0.0.1:8080->80/tcp

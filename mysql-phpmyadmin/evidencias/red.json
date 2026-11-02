@@ -1,8 +1,8 @@
 [
     {
         "Name": "red_tas3",
-        "Id": "d5f1dddd50795a895b33bf0e6f971c644cd442168d707f1754712272e22ef884",
-        "Created": "2026-11-02T15:36:14.423785062Z",
+        "Id": "5725bf693cb08c0888cd5abfa9fae25039a25e1197bad8d6206988fd66c90dc5",
+        "Created": "2026-11-02T15:39:21.281165836Z",
         "Scope": "local",
         "Driver": "bridge",
         "EnableIPv4": true,
@@ -32,17 +32,17 @@
             "com.docker.compose.version": "5.1.3"
         },
         "Containers": {
-            "eaa84ad47bd2b8268ccee6440aef298c025b041a18734f3b13676bc3d04f96db": {
+            "2263fc4f19d6cac1c87b503f3880ac603eb867a58d28f5fa8eafbd6bf9268882": {
                 "Name": "mysql_tas3",
-                "EndpointID": "1e29339dbc02e2816eaf0dc4728948d5708d332e39078f8b43dd2a56049254ad",
-                "MacAddress": "8e:15:f6:a6:40:83",
+                "EndpointID": "ea7eb55d459fcab871010250c0c7f4b5c61d3838b78ebb66a8603719d85565af",
+                "MacAddress": "3e:82:a9:65:06:bb",
                 "IPv4Address": "172.18.0.2/16",
                 "IPv6Address": ""
             },
-            "fd27d728cfec4dad38beb5f38dccf5e6be08ef55d57eee83678360f4da8f63f9": {
+            "81c65814761d90a806439b550cddaa3d99d7e2e83d03065954b321f10a169b80": {
                 "Name": "phpmyadmin_tas3",
-                "EndpointID": "68877d72b70cdc227b7b385d17606f3ab000f1ed493b6c0854a7b4c2be31c8f2",
-                "MacAddress": "62:dd:d1:91:da:25",
+                "EndpointID": "6f5af58fda81172f561f2d236325b728553ba9d58df51c66b8a96b278c0ce308",
+                "MacAddress": "2a:ee:42:02:5c:c1",
                 "IPv4Address": "172.18.0.3/16",
                 "IPv6Address": ""
             }
