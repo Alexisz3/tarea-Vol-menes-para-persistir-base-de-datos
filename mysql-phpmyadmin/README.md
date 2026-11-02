@@ -10,7 +10,7 @@ Comunicación entre un contenedor MySQL y un contenedor phpMyAdmin mediante una 
 
 ## 2. Tiempo de duración
 
-La duración real del despliegue y de la verificación se registra en `evidencias/inicio.txt` y `evidencias/fin.txt`. La instalación de herramientas y la redacción del informe se realizan fuera de ese intervalo.
+La ejecución automatizada del despliegue y de la verificación duró **30 segundos (0,5 minutos)**: del 2 de noviembre de 2026 a las 10:39:11 hasta las 10:39:41, hora de Ecuador. La instalación de herramientas y la redacción del informe se realizaron fuera de ese intervalo. Las marcas UTC originales están en [inicio.txt](evidencias/inicio.txt) y [fin.txt](evidencias/fin.txt).
 
 ## 3. Fundamentos
 
@@ -26,14 +26,7 @@ El navegador accede a phpMyAdmin a través de un puerto publicado. En este caso,
 
 Docker Compose permite describir esta configuración en un archivo declarativo. La comprobación de salud de MySQL evita iniciar la prueba antes de que el servidor pueda atender consultas. Finalmente, crear la base desde el formulario de phpMyAdmin y verificarla desde MySQL demuestra que existe comunicación funcional entre los servicios, más allá de que ambos contenedores aparezcan como iniciados.
 
-```text
-Navegador → 127.0.0.1:8080 → phpmyadmin_tas3:80
-                                    │
-                              red_tas3 (bridge)
-                                    │
-                               mysql:3306
-                              mysql_tas3
-```
+![Arquitectura de la red Docker](arquitectura.svg)
 
 **Figura 1.** Comunicación del navegador con phpMyAdmin y de phpMyAdmin con MySQL.
 
@@ -107,7 +100,7 @@ La salida debe resolver `mysql` a una dirección de la red Docker. [Ver resoluci
 
 Abrir `http://127.0.0.1:8080` en el navegador del equipo que ejecuta los contenedores. Introducir usuario `root` y la contraseña definida anteriormente.
 
-![Pantalla de acceso de phpMyAdmin](evidencias/01-acceso.png)
+<img src="evidencias/01-acceso.png" alt="Pantalla de acceso de phpMyAdmin" width="800">
 
 **Figura 2.** Pantalla real de acceso a phpMyAdmin antes de introducir las credenciales.
 
@@ -115,11 +108,11 @@ Abrir `http://127.0.0.1:8080` en el navegador del equipo que ejecuta los contene
 
 Después de iniciar sesión, abrir **Databases**, escribir `test_red` en el campo de creación de bases y pulsar **Create**. No se utiliza `MYSQL_DATABASE` ni una instrucción previa para crear esta base: se crea mediante el formulario web.
 
-![Formulario para crear test_red](evidencias/02-crear-base.png)
+<img src="evidencias/02-crear-base.png" alt="Formulario para crear test_red" width="800">
 
 **Figura 3.** Formulario de phpMyAdmin con el nombre de la base de prueba.
 
-![Base creada desde phpMyAdmin](evidencias/03-base-creada.png)
+<img src="evidencias/03-base-creada.png" alt="Base creada desde phpMyAdmin" width="800">
 
 **Figura 4.** Estado de la interfaz después de crear `test_red`.
 
@@ -145,7 +138,18 @@ Este comando se usa al terminar las comprobaciones en el entorno desechable. Eli
 
 ## 9. Resultados
 
-La ejecución, las versiones y el estado final deben contrastarse con los archivos originales de [evidencias](evidencias/). Las capturas proceden del navegador que accedió a los contenedores del runner.
+La [ejecución verificable de GitHub Actions](https://github.com/Alexisz3/tarea-Vol-menes-para-persistir-base-de-datos/actions/runs/41473622314) terminó correctamente, incluida la publicación de evidencias. Las capturas originales muestran la interacción de Chromium con los contenedores del runner.
+
+| Requisito | Resultado observado | Evidencia |
+|---|---|---|
+| Crear MySQL con credenciales | mysql_tas3 iniciado y saludable | [Contenedores](evidencias/contenedores.txt) |
+| Crear phpMyAdmin y configurar destino | phpmyadmin_tas3 conectado a mysql:3306 | [Acceso web](evidencias/01-acceso.png) |
+| Red personalizada compartida | Ambos contenedores pertenecen a red_tas3 | [Inspección de la red](evidencias/red.json) |
+| Resolución del nombre MySQL | mysql resuelto dentro del contenedor web | [DNS](evidencias/dns.txt) |
+| Crear una base desde phpMyAdmin | test_red creada al enviar el formulario | [Captura final](evidencias/03-base-creada.png) |
+| Verificar en el servidor | SHOW DATABASES devuelve test_red | [Consulta MySQL](evidencias/mysql.txt) |
+
+Versiones observadas: **Docker Engine 29.4.2, MySQL 8.4.13 y phpMyAdmin 5.2.3**. El servidor de bases quedó vacío de tablas, lo cual corresponde al objetivo solicitado: crear una base de prueba. Se conservaron los [identificadores de las imágenes](evidencias/imagenes.txt) y el [resultado de la comprobación automática](evidencias/resultado.txt).
 
 **Conclusión:** una red bridge personalizada permite que phpMyAdmin localice MySQL por nombre de servicio. La configuración del destino y las credenciales permiten administrar el servidor desde la interfaz web. Crear una base desde esa interfaz y consultarla directamente en MySQL permite comprobar el recorrido completo de la solicitud.
 
