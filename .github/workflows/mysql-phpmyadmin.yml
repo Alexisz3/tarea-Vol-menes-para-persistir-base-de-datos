@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/mysql-phpmyadmin.yml'
+      - 'mysql-phpmyadmin/verificar_ui.py'
   workflow_dispatch:
 permissions:
   contents: write
@@ -40,6 +41,7 @@ jobs:
           test "$(docker exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql_tas3 mysql -uroot -Nse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='test_red';")" = 1
           docker image inspect mysql:8.4 phpmyadmin:5.2.3 --format '{{json .RepoDigests}}' > evidencias/imagenes.txt
           date -u +%FT%TZ > evidencias/fin.txt
+          rm -f evidencias/error.png evidencias/error-interfaz.txt
           echo 'VERIFICACION CORRECTA: test_red creada desde phpMyAdmin y confirmada en MySQL.' > evidencias/resultado.txt
       - uses: actions/upload-artifact@v4
         if: always()
