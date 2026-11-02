@@ -1,0 +1,46 @@
+←
+     
+Reciente
+Favoritas
+ 
+Nueva
+information_schema
+mysql
+performance_schema
+sys
+test_red
+ Servidor: mysql:3306
+ Base de datos: test_red
+ Estructura
+(actual)
+ SQL
+ Buscar
+ Generar una consulta
+ Exportar
+ Importar
+ Operaciones
+ Privilegios
+Más
+ 
+ Consola
+ascendente
+descendente
+Orden:
+Depuración SQL
+Orden de ejecución
+Tiempo necesario
+Ordenar por:
+Consultas grupales
+Ocurrió un error al obtener información de depuración SQL.
+Opciones
+Definir predeterminado
+Siempre expandir mensajes de consultas
+Mostrar histórico de consultas al iniciar
+Mostrar consulta de navegación actual
+ Ejecute consultas en Enter e inserte una nueva línea con Shift+Enter. Para que esto sea permanente, consulte la configuración.
+Cambiar al tema oscuro
+
+ No se han encontrado tablas en la base de datos.
+ Crear nueva tabla
+Nombre de la tabla
+Número de columnas

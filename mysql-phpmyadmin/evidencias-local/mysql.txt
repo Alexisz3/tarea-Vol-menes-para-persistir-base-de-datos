@@ -1,0 +1,4 @@
+version_mysql
+8.4.13
+Database (test_red)
+test_red

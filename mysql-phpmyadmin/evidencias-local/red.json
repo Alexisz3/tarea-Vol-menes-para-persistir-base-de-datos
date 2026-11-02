@@ -1,0 +1,61 @@
+[
+    {
+        "Name": "red_tas3",
+        "Id": "415ccd4e3a1dc2bc5c44b350cd0e246bd6da44171f65fc9a6f40be005195309d",
+        "Created": "2026-11-02T11:53:28.775323627-05:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Options": {},
+        "Labels": {
+            "com.docker.compose.config-hash": "99717e01ff8e523d9160ed71433d15ebd6b2ca22c431f9631dc1885a49db4fe8",
+            "com.docker.compose.network": "red_tas3",
+            "com.docker.compose.project": "mysql-phpmyadmin",
+            "com.docker.compose.version": "5.7.0"
+        },
+        "Containers": {
+            "38ddecdd9278b58d519c799e3b5988e3286f6984ca02c15f1c14303dc99baba1": {
+                "Name": "phpmyadmin_tas3",
+                "EndpointID": "64bad320ea805c088fb07abfb9776a4031d4b7566a41026878312193d2baa511",
+                "MacAddress": "5a:9d:9e:18:c5:dc",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            },
+            "459d3df562a162321ef7b29b2fb338c462c5950cbc9957ead93890ea37f91d0a": {
+                "Name": "mysql_tas3",
+                "EndpointID": "15a5a096e9b2c5db6b9faed076edfba9454b2c1b1daa523871c1164aafbbc226",
+                "MacAddress": "12:c9:a1:6d:f0:5c",
+                "IPv4Address": "172.18.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+        "Status": {
+            "IPAM": {
+                "Subnets": {
+                    "172.18.0.0/16": {
+                        "IPsInUse": 5,
+                        "DynamicIPsAvailable": 65531
+                    }
+                }
+            }
+        }
+    }
+]

@@ -1,0 +1,1 @@
+EXITO: base test_red creada desde phpMyAdmin y comprobada en MySQL local, dentro de WSL 2.
