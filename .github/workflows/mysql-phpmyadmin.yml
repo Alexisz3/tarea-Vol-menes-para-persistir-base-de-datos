@@ -1,0 +1,59 @@
+name: MySQL y phpMyAdmin - practica 3
+on:
+  push:
+    paths:
+      - '.github/workflows/mysql-phpmyadmin.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  practica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mysql-phpmyadmin
+    env:
+      MYSQL_ROOT_PASSWORD: Tas3_Laboratorio_2026
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar herramientas de navegador
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Crear contenedores y red personalizada
+        run: |
+          set -euo pipefail
+          mkdir -p evidencias
+          date -u +%FT%TZ > evidencias/inicio.txt
+          docker version > evidencias/docker-version.txt
+          docker compose up -d --wait --wait-timeout 240
+          docker compose ps > evidencias/contenedores.txt
+          docker network inspect red_tas3 > evidencias/red.json
+          docker exec phpmyadmin_tas3 getent hosts mysql > evidencias/dns.txt
+      - name: Crear base desde interfaz de phpMyAdmin
+        run: python verificar_ui.py
+      - name: Verificar la base en MySQL
+        run: |
+          set -euo pipefail
+          docker exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql_tas3 mysql -uroot -e "SELECT VERSION() AS version_mysql; SHOW DATABASES LIKE 'test_red';" > evidencias/mysql.txt
+          test "$(docker exec -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql_tas3 mysql -uroot -Nse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='test_red';")" = 1
+          docker image inspect mysql:8.4 phpmyadmin:5.2.3 --format '{{json .RepoDigests}}' > evidencias/imagenes.txt
+          date -u +%FT%TZ > evidencias/fin.txt
+          echo 'VERIFICACION CORRECTA: test_red creada desde phpMyAdmin y confirmada en MySQL.' > evidencias/resultado.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-mysql-phpmyadmin
+          path: mysql-phpmyadmin/evidencias/
+      - name: Publicar evidencias en repositorio
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evidencias
+          git diff --cached --quiet || git commit -m "Guardar capturas reales y resultados MySQL phpMyAdmin"
+          git push
+      - name: Liberar servicios del runner
+        if: always()
+        run: docker compose down -v
